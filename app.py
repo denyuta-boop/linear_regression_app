@@ -5,30 +5,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
 
-# ここからAdSenseのコードを埋め込みます
-# スタイリングでページの上下にスペースを追加しています
-adsense_header_html = """
-<div style="text-align: center; margin: 10px 0;">
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1070578872843383"
-         crossorigin="anonymous"></script>
-    <ins class="adsbygoogle"
-         style="display:block"
-         data-ad-client="ca-pub-1070578872843383"
-         data-ad-slot="YOUR_AD_SLOT_ID"
-         data-ad-format="auto"
-         data-full-width-responsive="true"></ins>
-    <script>
-         (adsbygoogle = window.adsbygoogle || []).push({});
-    </script>
-</div>
-"""
-# --- AdSenseのコードはここまで ---
+# === ここから追加 ===
+# iframeを使ってads.htmlを埋め込む
+st.markdown('<iframe src="ads.html" width="100%" height="200px" style="border:0;"</iframe>', unsafe_allow_html=True)
+# === ここまで追加 ===
 
-# st.markdownを使ってHTMLをページに挿入
-# 'unsafe_allow_html=True'でHTMLの描画を許可します
-st.markdown(adsense_header_html, unsafe_allow_html=True)
-
-# 以下、あなたのアプリの元のコードを続けます
+# 以下、あなたのアプリの元のコード
 st.title('CSVから線形回帰分析を行うアプリ')
 st.markdown('CSVファイルをアップロードすると、線形回帰モデルを作成し、結果を可視化します。')
 
