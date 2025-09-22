@@ -1,4 +1,3 @@
-# 既存のコードはそのまま...
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -6,7 +5,30 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
 
-# アプリのタイトルを設定
+# ここからAdSenseのコードを埋め込みます
+# スタイリングでページの上下にスペースを追加しています
+adsense_header_html = """
+<div style="text-align: center; margin: 10px 0;">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1070578872843383"
+         crossorigin="anonymous"></script>
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="ca-pub-1070578872843383"
+         data-ad-slot="YOUR_AD_SLOT_ID"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+"""
+# --- AdSenseのコードはここまで ---
+
+# st.markdownを使ってHTMLをページに挿入
+# 'unsafe_allow_html=True'でHTMLの描画を許可します
+st.markdown(adsense_header_html, unsafe_allow_html=True)
+
+# 以下、あなたのアプリの元のコードを続けます
 st.title('CSVから線形回帰分析を行うアプリ')
 st.markdown('CSVファイルをアップロードすると、線形回帰モデルを作成し、結果を可視化します。')
 
