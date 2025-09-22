@@ -5,12 +5,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
 
-# === ここから追加 ===
-# iframeを使ってads.htmlを埋め込む
-st.markdown('<iframe src="ads.html" width="100%" height="200px" style="border:0;"</iframe>', unsafe_allow_html=True)
-# === ここまで追加 ===
 
-# 以下、あなたのアプリの元のコード
 st.title('CSVから線形回帰分析を行うアプリ')
 st.markdown('CSVファイルをアップロードすると、線形回帰モデルを作成し、結果を可視化します。')
 
