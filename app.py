@@ -1,4 +1,4 @@
-# 必要なライブラリをインポート
+# 既存のコードはそのまま...
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -27,6 +27,18 @@ if uploaded_file is not None:
     x_column = st.sidebar.selectbox('説明変数（X軸）を選択してください', columns)
     y_column = st.sidebar.selectbox('目的変数（Y軸）を選択してください', columns)
 
+    # === ここから新しいコードを追加 ===
+    st.sidebar.markdown('---')
+    st.sidebar.header('グラフ設定')
+    # 軸の色を選ぶカラーピッカー
+    axis_color = st.sidebar.color_picker('軸とラベルの色を選んでください', '#000000')
+
+    # matplotlibとseabornの軸の色設定を更新
+    plt.rc('axes', edgecolor=axis_color) # 軸の枠線の色
+    sns.set(rc={'axes.edgecolor': axis_color, 'xtick.color': axis_color, 'ytick.color': axis_color})
+    
+    # === ここまで新しいコードを追加 ===
+
     # 選択された列を数値型に変換
     try:
         x_data = df[x_column].values.reshape(-1, 1)
@@ -34,7 +46,7 @@ if uploaded_file is not None:
     except Exception as e:
         st.error(f"選択した列に数値データが含まれていない可能性があります。別の列を選択してください。エラー: {e}")
         st.stop()
-        
+
     # 線形回帰モデルを作成
     model = LinearRegression()
     model.fit(x_data, y_data)
@@ -42,28 +54,28 @@ if uploaded_file is not None:
 
     # グラフを可視化
     st.subheader('線形回帰分析の結果')
-    
+
     # Matplotlibの図（Figure）を作成
     fig, ax = plt.subplots(figsize=(10, 6))
-    
+
     # 散布図をプロット
     sns.scatterplot(x=df[x_column], y=df[y_column], ax=ax, label='実測データ')
-    
+
     # 回帰直線をプロット
     ax.plot(df[x_column], y_pred, color='red', linewidth=2, label='回帰直線')
-    
+
     # グラフのタイトルとラベルを設定
-    ax.set_title(f'線形回帰 ({y_column} vs {x_column})')
-    ax.set_xlabel(x_column)
-    ax.set_ylabel(y_column)
+    ax.set_title(f'線形回帰 ({y_column} vs {x_column})', color=axis_color) # タイトルの色
+    ax.set_xlabel(x_column, color=axis_color) # X軸ラベルの色
+    ax.set_ylabel(y_column, color=axis_color) # Y軸ラベルの色
     ax.legend()
     st.pyplot(fig)
-    
+
     # モデルの係数を表示
     st.subheader('モデルの係数')
     st.write(f'傾き (coef_): **{model.coef_[0]:.4f}**')
     st.write(f'切片 (intercept_): **{model.intercept_:.4f}**')
-    
+
     # R^2スコアを表示
     st.subheader('モデルの評価')
     st.write(f'決定係数（R^2）: **{model.score(x_data, y_data):.4f}**')
