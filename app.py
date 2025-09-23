@@ -3,8 +3,9 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import statsmodels.api as sm
-import io
-import japanize_matplotlib
+import io # ダウンロード機能用
+import japanize_matplotlib 
+plt.rcParams['font.family'] = 'IPAexGothic' # ← ★★★この行でフォントを強制指定★★★
 
 # --- ページ設定 ---
 st.set_page_config(layout="wide", page_title="高機能 線形回帰分析アプリ")
@@ -66,9 +67,9 @@ if uploaded_file is not None:
                 fig, ax = plt.subplots(figsize=(10, 6))
                 sns.scatterplot(x=x_data, y=y_data, ax=ax, label='実測データ', color=scatter_color, s=scatter_size)
                 ax.plot(x_data, y_pred, color=line_color, linewidth=2, label='回帰直線')
-                ax.set_xlabel(x_column)
-                ax.set_ylabel(y_column)
-                ax.legend()
+                ax.set_xlabel(x_column) 
+                ax.set_ylabel(y_column) 
+                ax.legend(prop={"size": 12}) # ← ★★★凡例のフォント設定を確実に反映★★★
                 st.pyplot(fig)
                 
                 # グラフダウンロード機能
