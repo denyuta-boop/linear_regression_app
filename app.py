@@ -3,7 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import statsmodels.api as sm
-import io # ダウンロード機能用
+import io
+import japanize_matplotlib
 
 # --- ページ設定 ---
 st.set_page_config(layout="wide", page_title="高機能 線形回帰分析アプリ")
@@ -109,8 +110,9 @@ if uploaded_file is not None:
             new_x_value = st.number_input(f'予測したい「{x_column}」の値を入力してください', format="%.4f")
             
             if st.button('予測する'):
-                new_x_with_const = sm.add_constant([new_x_value])
-                prediction = results.predict(new_x_with_const)
+                # 予測用のデータをモデルが学習した時と同じ形 [定数, Xの値] にする
+                prediction_data = [[1, new_x_value]] 
+                prediction = results.predict(prediction_data)
                 st.success(f'予測結果: **{prediction[0]:.4f}**')
     
     except Exception as e:
