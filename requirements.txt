@@ -4,4 +4,3 @@ matplotlib
 seaborn
 statsmodels
 numpy
-japanize-matplotlib

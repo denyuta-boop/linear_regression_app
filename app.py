@@ -3,9 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import statsmodels.api as sm
-import io # ダウンロード機能用
-import japanize_matplotlib 
-plt.rcParams['font.family'] = 'IPAexGothic' # ← ★★★この行でフォントを強制指定★★★
+import io
 
 # --- ページ設定 ---
 st.set_page_config(layout="wide", page_title="高機能 線形回帰分析アプリ")
@@ -38,86 +36,74 @@ with st.sidebar:
 
 # --- メイン画面 ---
 if uploaded_file is not None:
-    # データ型のチェックと変換
     try:
-        # 数値型に変換できない値をNaNにする
         df[x_column] = pd.to_numeric(df[x_column], errors='coerce')
         df[y_column] = pd.to_numeric(df[y_column], errors='coerce')
-        # NaNを含む行を削除
         df.dropna(subset=[x_column, y_column], inplace=True)
-        
         x_data = df[x_column]
         y_data = df[y_column]
         
         if x_data.empty or y_data.empty:
             st.error("選択された列に有効な数値データがありません。")
         else:
-            # --- モデル作成と分析 ---
             X = sm.add_constant(x_data)
             model = sm.OLS(y_data, X)
             results = model.fit()
             y_pred = results.predict(X)
-
-            # --- レイアウト設定 ---
             col1, col2 = st.columns([2, 1])
 
             with col1:
-                st.subheader('📈 散布図と回帰直線')
+                st.subheader('Scatter plot with Regression Line') # 英語表記に変更
                 sns.set_style(plot_style)
                 fig, ax = plt.subplots(figsize=(10, 6))
-                sns.scatterplot(x=x_data, y=y_data, ax=ax, label='実測データ', color=scatter_color, s=scatter_size)
-                ax.plot(x_data, y_pred, color=line_color, linewidth=2, label='回帰直線')
-                ax.set_xlabel(x_column) 
-                ax.set_ylabel(y_column) 
-                ax.legend(prop={"size": 12}) # ← ★★★凡例のフォント設定を確実に反映★★★
+                
+                ax.set_title(f'Relationship between {y_column} and {x_column}') # 英語表記に変更
+                sns.scatterplot(x=x_data, y=y_data, ax=ax, label='Actual Data', color=scatter_color, s=scatter_size)
+                ax.plot(x_data, y_pred, color=line_color, linewidth=2, label='Regression Line')
+                ax.set_xlabel(x_column)
+                ax.set_ylabel(y_column)
+                ax.legend()
+                
                 st.pyplot(fig)
                 
-                # グラフダウンロード機能
                 buf = io.BytesIO()
                 fig.savefig(buf, format="png")
                 st.download_button(
-                    label="グラフをダウンロード (PNG)",
+                    label="Download Plot (PNG)",
                     data=buf,
-                    file_name=f"regression_plot_{y_column}_vs_{x_column}.png",
+                    file_name=f"regression_plot.png",
                     mime="image/png"
                 )
 
-
             with col2:
-                st.subheader('📊 分析結果サマリー')
+                st.subheader('Analysis Summary') # 英語表記に変更
                 st.text(results.summary())
-
-                st.subheader('💡 結果のポイント解説')
+                st.subheader('Key Metrics') # 英語表記に変更
                 coef_summary = results.summary2().tables[1]
-                st.write(f"**傾き (coef):** {coef_summary['Coef.'][1]:.4f}")
-                st.write(f"**切片 (intercept):** {coef_summary['Coef.'][0]:.4f}")
-                
+                st.write(f"**Coefficient (slope):** {coef_summary['Coef.'][1]:.4f}")
+                st.write(f"**Intercept:** {coef_summary['Coef.'][0]:.4f}")
                 st.markdown("---")
-                
-                st.subheader('モデルの評価')
-                st.write(f"**決定係数 (R-squared):** {results.rsquared:.4f}")
+                st.subheader('Model Evaluation') # 英語表記に変更
+                st.write(f"**R-squared:** {results.rsquared:.4f}")
 
-                with st.expander("📝 各指標の簡単な説明を見る"):
+                with st.expander("See explanations of metrics"): # 英語表記に変更
                     st.markdown("""
-                    - **R-squared (決定係数):** 1に近いほど、モデルが実際のデータをうまく説明できていることを示します。
-                    - **coef (係数):** Xが1増えた時に、Yがどれだけ増えるか(傾き)を示します。
-                    - **P>|t| (P値):** 係数が「偶然そうなっただけ」という可能性です。一般的に0.05より小さいと「統計的に意味のある関係」と判断します。
-                    - **[0.025, 0.975]:** 信頼区間。95%の確率で本当の係数がこの範囲にあることを示します。
+                    - **R-squared:** Indicates how well the model explains the data. Closer to 1 is better.
+                    - **Coefficient (slope):** Shows how much Y changes for a one-unit increase in X.
+                    - **P>|t| (p-value):** If below 0.05, the relationship is generally considered statistically significant.
                     """)
 
-            # --- 未来の予測 ---
             st.markdown("---")
-            st.subheader(f'🚀 「{x_column}」の値から「{y_column}」を予測')
-            new_x_value = st.number_input(f'予測したい「{x_column}」の値を入力してください', format="%.4f")
+            st.subheader(f'🚀 Predict "{y_column}" from "{x_column}"') # 英語表記に変更
+            new_x_value = st.number_input(f'Enter a value for "{x_column}" to predict', format="%.4f")
             
-            if st.button('予測する'):
-                # 予測用のデータをモデルが学習した時と同じ形 [定数, Xの値] にする
+            if st.button('Predict'): # 英語表記に変更
                 prediction_data = [[1, new_x_value]] 
                 prediction = results.predict(prediction_data)
-                st.success(f'予測結果: **{prediction[0]:.4f}**')
+                st.success(f'Predicted Result: **{prediction[0]:.4f}**')
     
     except Exception as e:
-        st.error(f"エラーが発生しました。選択した列が数値データか確認してください。エラー詳細: {e}")
+        st.error(f"An error occurred. Please check if the selected columns contain numeric data. Error: {e}")
 
 else:
-    st.info('サイドバーからCSVファイルをアップロードしてください。')
+    st.info('Please upload a CSV file from the sidebar to get started.')
